@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import {v4 as uuid} from 'uuid';//npm i uuid
+import ToDoItem from "./ToDoItem";
 
 const KEY="tareas-miercoles";
 
@@ -37,6 +38,35 @@ function ToDoList(){
         setTodos(newTodos);
     }
 
+    const cambiarEstadoTarea=(id)=>{
+        
+        const newTodos=[...todos];
+        const todo=newTodos.find((todo)=>todo.id===id);
+        todo.complete=!todo.complete;
+        setTodos(newTodos);
+    }
+
+    const cantidadTareas=()=>{
+        return todos.filter((todo)=>!todo.complete).length;
+    }
+    const ResumenTareas=()=>{
+        const cantidad=cantidadTareas();
+        if(cantidad>1){
+            return (<div className="alert alert-info mt-3">
+            Te quedan {cantidad} tareas pendientes!
+            </div>);
+        }else if(cantidad===1){
+            return (<div className="alert alert-info mt-3">
+            Te queda {cantidad} tarea pendiente!
+            </div>);
+        }else{
+            return (<div className="alert alert-info mt-3">
+            No te quedan tareas pendientes!
+        </div>);
+        }   
+    }
+
+
     return(
         <>
             <h1>Listado de Tareas</h1>
@@ -48,6 +78,11 @@ function ToDoList(){
                 <button onClick={eliminarTareasCompletadas} className="btn btn-danger ms-2"><i className="bi bi-trash">
                     </i></button>
             </div>
+            <ul className="list-group">
+                {todos.map((todo)=><ToDoItem todo={todo} key={todo.id} cambiarEstado={cambiarEstadoTarea}></ToDoItem>)}
+                {/*soy comentario*/}
+            </ul>
+            <ResumenTareas/>
         </> 
     );
 }
